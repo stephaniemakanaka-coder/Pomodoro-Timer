@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retro Pomodoro</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body {
+margin: 0;
+height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+background: linear-gradient(135deg, #ffb3d9, #8be9ff, #caa6ff);
+font-family: 'Press Start 2P', cursive;
+}
+
+/* MAIN CONSOLE */
+.timer {
+width: 360px;
+border-radius: 24px;
+border: 5px solid #111;
+background: rgba(255,255,255,0.9);
+box-shadow: 0 18px 0 #111;
+overflow: hidden;
+}
+
+/* SCREEN */
+.screen {
+background: #12122b;
+color: #7CFFCB;
+text-align: center;
+padding: 25px;
+}
+
+.mode {
+font-size: 10px;
+color: #ffd166;
+margin-bottom: 10px;
+}
+
+.time {
+font-size: 28px;
+letter-spacing: 2px;
+}
+
+/* BUTTONS */
+.buttons {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 8px;
+padding: 12px;
+}
+
+button {
+padding: 14px;
+font-size: 10px;
+font-weight: 900;
+border: 3px solid #111;
+border-radius: 12px;
+cursor: pointer;
+box-shadow: 0 5px 0 #111;
+transition: 0.15s;
+color: #111;
+text-transform: uppercase;
+}
+
+/* pastel arcade palette */
+.start { background: #7dffb2; }
+.pause { background: #ffd166; }
+.reset { background: #ff5c8a; }
+.short { background: #5dd6ff; }
+.long { background: #b68bff; }
+
+button:hover {
+transform: translateY(-2px);
+}
+
+button:active {
+transform: translateY(3px);
+box-shadow: 0 2px 0 #111;
+}
+</style>
+</head>
+
+<body>
+
+<div class="timer">
+
+<!-- SCREEN -->
+<div class="screen">
+<div class="mode" id="mode">WORK SESSION</div>
+<div class="time" id="time">25:00</div>
+</div>
+
+<!-- CONTROLS -->
+<div class="buttons">
+<button class="start" onclick="startTimer()">Start</button>
+<button class="pause" onclick="pauseTimer()">Pause</button>
+<button class="reset" onclick="resetTimer()">Reset</button>
+
+<button class="short" onclick="setShort()">Short Break</button>
+<button class="long" onclick="setLong()">Long Break</button>
+</div>
+
+</div>
+
+<script>
+let timer;
+let running = false;
+
+let mode = "work";
+let minutes = 25;
+let seconds = 0;
+
+const timeEl = document.getElementById("time");
+const modeEl = document.getElementById("mode");
+
+/* DISPLAY */
+function updateDisplay() {
+timeEl.innerText =
+String(minutes).padStart(2,'0') + ":" + String(seconds).padStart(2,'0');
+}
+
+/* TIMER LOGIC */
+function tick() {
+if (seconds === 0) {
+if (minutes === 0) {
+clearInterval(timer);
+running = false;
+return;
+}
+minutes--;
+seconds = 59;
+} else {
+seconds--;
+}
+updateDisplay();
+}
+
+function startTimer() {
+if (!running) {
+timer = setInterval(tick, 1000);
+running = true;
+}
+}
+
+function pauseTimer() {
+clearInterval(timer);
+running = false;
+}
+
+function resetTimer() {
+clearInterval(timer);
+running = false;
+
+if (mode === "work") minutes = 25;
+if (mode === "short") minutes = 5;
+if (mode === "long") minutes = 15;
+
+seconds = 0;
+updateDisplay();
+}
+
+/* MODES */
+function setShort() {
+mode = "short";
+minutes = 5;
+seconds = 0;
+modeEl.innerText = "SHORT BREAK";
+updateDisplay();
+}
+
+function setLong() {
+mode = "long";
+minutes = 15;
+seconds = 0;
+modeEl.innerText = "LONG BREAK";
+updateDisplay();
+}
+</script>
+
+</body>
+</html>
